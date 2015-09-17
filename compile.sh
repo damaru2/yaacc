@@ -48,7 +48,7 @@ echo "[*] Compiling sintactic analizer."
 java -jar lib/cup.jar -dump_grammar -symbols ClaseLexica -parser AnalizadorSintacticoTiny -compact_red Tiny.cup &> .a.temp
 a=`cat .a.temp | grep "\-\-\-\-\-\-\-" -A 1 | grep error | cut -d " " -f 3`
 if [ $a != "0" ]; then
-	echo "[!] Ha habido errores en la compilacion de Tiny.cup"
+	echo "[!] There has been errors in the compilation of Tiny.cup"
 	cat .a.temp
 	rm .a.temp
 	exit 1
