@@ -14,4 +14,4 @@ It generates P-machine code in a the file called output.yap
 - The required JCup and JLex libraries.
 - The source code of the Java compiler implementation 
 - Several examples of the C like language separated in two folders. One contains correct code, so the compiler successfully generate code for those, and the other contains lexical and syntactic errors so the compiler detects them and output descriptive error messages.
-- A folder `lexico` to debug the lexical implementation, it's a slightly modified version of the final lexical that displays the recognized lexical tokens.
+- A folder `lexico` to debug the lexical implementation It's a slightly modified version of the final lexical that displays the recognized lexical tokens.
