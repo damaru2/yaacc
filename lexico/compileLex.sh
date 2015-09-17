@@ -1,6 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-java -cp jlex.jar JLex.Main AnalizadorLexicoTiny.l > /dev/null
+java -cp ../lib/jlex.jar JLex.Main AnalizadorLexicoTiny.l > /dev/null
 mv AnalizadorLexicoTiny.l.java ./src/AnalizadorLexicoTiny.java
 javac -cp ../lib/cup.jar -sourcepath src -d bin src/*.java
 java -cp ../lib/cup.jar:bin alex.Main input.c
