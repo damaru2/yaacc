@@ -1,2 +1,2 @@
-# yaacc
-Yet another almost C compiler
+# YAACC
+Yet Another Almost C Compiler
