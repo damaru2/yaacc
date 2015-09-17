@@ -1,4 +1,4 @@
-//Declaración, inicialización y uso de tipos structs simples
+//Declaration, initialization and use of simple structs
 
 struct tipoEj{
 	int a;

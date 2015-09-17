@@ -1,5 +1,5 @@
-//Los enteros se pueden usar como booleanos ¡y además se pueden hacer operaciones
-//lógicas sobre ellos!
+//Integers can be used as booleans and you can operate them with other
+//booleans
 
 void main(){
 	int i=0;

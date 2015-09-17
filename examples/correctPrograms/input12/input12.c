@@ -1,4 +1,4 @@
-//Paso por valor de un struct en una función
+//Struct as the argument of a function
 
 struct asdf{
 	int x;

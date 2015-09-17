@@ -1,4 +1,4 @@
-//Los enteros se pueden usar como booleanos
+//Integers can be used as booleans
 
 void main(){
 	int i=1;

@@ -6,15 +6,15 @@ struct tipoEj{
 int main(){
 	//int i = -(2+3*4/5%6-7);   //Ok
 	bool d;
-	//bool b = (d&&i)+1; 		//Mal
-	//1++; 						//Mal
+	//bool b = (d&&i)+1; 		//Bad
+	//1++; 						//Bad
 	//int c[3];
-	//c++; 						//Mal
+	//c++; 						//Bad
 	//c[1]++; 					//Ok
 	tipoEj a;
 	//--a.a; 					//Ok
-	//--a.b; 					//Mal
+	//--a.b; 					//Bad
 	//--a.c[1]; 				//Ok
-	//--a.c; 					//Mal
+	//--a.c; 					//Bad
 	return 0;
 }

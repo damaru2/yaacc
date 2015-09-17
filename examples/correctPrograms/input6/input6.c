@@ -1,4 +1,4 @@
-//Factorial recursivo
+//Recursive factorial
 
 int factorial(int n){
 	if(n==0||n==1)return 1;

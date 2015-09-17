@@ -2,7 +2,7 @@ void main(){
 	int i =5, j, k, l;
 
 	while (i--){
-		if (i == 1){//aquí se hace break, la i acabará valiendo 1.
+		if (i == 1){//because of this break, at the end, 'i' will be 1.
 			l= 30;
 			break;
 		}
@@ -10,8 +10,8 @@ void main(){
 			k = 17;
 			continue;
 		}
-		j = i; //la j valdrá 3 pues cuando i==2 se hace continue y en i==1 se hace break
+		j = i; // j will be 3 because when i==2 continue is applied and in i==1 a break is executed
 
 	}
-	// Se espera i = 1, j=3, k = 17, l=30
+	// Expected final state i = 1, j=3, k = 17, l=30
 }

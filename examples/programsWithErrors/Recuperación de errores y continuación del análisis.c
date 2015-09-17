@@ -1,5 +1,5 @@
-//El compilador es capaz de recuperarse de todos estos errores señalados
-//sin parar la compilación prosiguiendo el análisis aunque por supuesto sin generar codigo.
+//The compiler can continue the compilation proccess despite all these errors
+//continuing with the analysis. Of course it doesn't generate code.
 
 int g (); //Prototype g declared but the function was not declared.
 

@@ -1,7 +1,7 @@
-//Se pueden declarar arrays y structs recursivamente unos dentro de otros
-//sin límite
+//Recursive declaration of arrays and structs
 
-//En el ejemplo, tenemos un struct tipoEj a con un array de asdf b[2] con un array de tipoEj2 x con la variable entera a.
+//In this example we have a struct "tipoEj a" and inside an array 
+//"asdf b[2]" and inside an array "tipoEj2 x" and inside the integer variable a.
 
 struct tipoEj2{
 	int a;

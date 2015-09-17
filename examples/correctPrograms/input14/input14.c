@@ -1,4 +1,4 @@
-//Declaración, inicialización y uso de arrays
+//Declaration, initialization and use of arrays
 
 void main(){
 	int b[3];

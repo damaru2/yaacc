@@ -1,4 +1,4 @@
-////Declaración, inicialización y uso de arrays mezclando globales y locales
+//Declaration, initialization and use of arrays mixing local and global ones.
 
 int a[3];
 

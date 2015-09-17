@@ -1,4 +1,4 @@
-//Asignación del valor de una función
+//Assign the return value of a function
 int f(){
 	return 0;
 }

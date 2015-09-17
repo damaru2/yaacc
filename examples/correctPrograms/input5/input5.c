@@ -1,5 +1,5 @@
-//asignación del valor de una función con paso por valor
-//Uso de variables locales en las funciones
+//Assign the return value of a function with a parameter passed by value.
+//Use of local variables in functions
 int f(int j){
 	return j;
 }

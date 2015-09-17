@@ -1,4 +1,4 @@
-//Factorial mutuamente recursivo
+//Mutual recursive factorial
 
 
 int factorial1(int n){

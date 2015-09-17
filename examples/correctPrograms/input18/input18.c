@@ -1,4 +1,4 @@
-//Paso por valor de un array a una función
+//Use of an array as the argument of a function
 
 int a[3][4];
 

@@ -1,4 +1,4 @@
-//Ejemplo de sobrecarga de funciones
+//Overload of functions
 
 int f (){
 	return 0;

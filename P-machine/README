@@ -1,0 +1,17 @@
+To execute the P-machine
+
+	Generate an executable with GHC compiler
+or
+	execute the Haskell interpreter:
+  > ghci Main.hs
+
+In the first case, execute:
+  > Pmachine input.txt
+
+
+In the second case write down in the GHCI command line:
+  > :main input.txt
+
+Error messages and the final state are passed to the standard output
+
+

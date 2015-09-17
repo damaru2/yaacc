@@ -1,4 +1,4 @@
-//Asignación sencilla y descarte de expresiones no asignadas
+//Simple assignment and dismiss of non assigned expressions.
 void f(){}
 
 void main(){

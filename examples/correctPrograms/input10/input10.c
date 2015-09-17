@@ -1,5 +1,6 @@
-//Declaración, inicialización y uso de tipos structs compuestos sin limite
-//Este es triple, struct dentro de struct dentro de struct
+//Declaration, initialization and use of composite structs without deep
+//limit when nesting
+
 
 struct asdf{
 	int x;

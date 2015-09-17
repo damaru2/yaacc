@@ -1,5 +1,6 @@
-//La asignación es una expresión, como tal devuelve un valor y se puede
-//asignar de manera encadenada (asociatividad por la derecha)
+//Assignment is a expression and as any other expression it returns a value
+//You can even assign this value to another variable ()
+//asignar de manera encadenada (right associativity)
 
 void main(){
 	int i, j, k;

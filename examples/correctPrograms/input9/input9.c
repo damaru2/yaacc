@@ -1,5 +1,5 @@
-//Declaración, inicialización y uso de tipos structs compuestos
-//es decir struct dentro de struct
+//Declaration, initialization and use of composite structs
+//this is a struct inside of a struct
 struct asdf{
 	int x;
 	int y;

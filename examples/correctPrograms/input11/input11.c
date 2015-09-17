@@ -1,6 +1,7 @@
-//Uso de variables globales
-//resultado de una función como paso de parámetros a otra función
-//Uso dentro de la función f de una variable local con el mismo nombre que la global
+//Use of global variables
+//Result of a function as a parameter of another function
+//Use, inside of a function, of a local variable with the same name 
+//of a global variable
 
 int a;
 

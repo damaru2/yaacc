@@ -1,4 +1,6 @@
-//Declaración, inicialización y uso de arrays locales y globales en un for
+//Declaration, initialization and use of arrays mixing local and global ones
+//and using them in a for
+
 
 int a[3][4];
 
