@@ -1,0 +1,16 @@
+{0} ssp 1;
+{1} mst 0;
+{2} cup 0 7;
+{3} stp;
+{4} ldc 0;
+{5} str 0 0;
+{6} retf;
+{7} ssp 6;
+{8} lda 0 5;
+{9} dpl;
+{10} mst 1;
+{11} cup 0 4;
+{12} sto;
+{13} ind;
+{14} ssp 6;
+{15} retp;

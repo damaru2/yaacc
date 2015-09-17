@@ -1,0 +1,12 @@
+Los archivos input.c muestran distintos tipos de errores que se pueden dar
+y que el compilador detecta.
+
+El archivo:
+Recuperación de errores y continuación del análisis.c
+
+es un código extenso con una gran cantidad de errores. Se pone este ejemplo
+para que se vea que el compilador puede recuperarse de todos ellos y
+proseguir con el análisis. El compilador es capaz de detectar todos los
+errores de ese código y proseguir
+
+En el archivo restante hay ejemplos de fallos por los tipos.

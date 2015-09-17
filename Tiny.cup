@@ -1,0 +1,243 @@
+package asint;
+
+import java.util.LinkedList;
+import java.util.List;
+
+
+import code.*;
+import declaration.*;
+import expression.*;
+import expression.enumeratedTypes.*;
+import expression.identifier.*;
+import program.*;
+import statement.*;
+import type.*;
+
+import java_cup.runtime.*;
+import alex.AnalizadorLexicoTiny;
+import alex.UnidadLexica;
+import errors.GestionErroresTiny;
+
+
+
+scan with {: return getScanner().next_token(); :};
+parser code {:
+	private GestionErroresTiny errores;
+	public void syntax_error(Symbol unidadLexica) {
+	   errores.errorSintactico((UnidadLexica)unidadLexica);
+ 	}
+:};
+init with {:
+	errores = new GestionErroresTiny();
+	AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
+	alex.fijaGestionErrores(errores);
+:};
+
+terminal String	 IDEN, ENT;
+terminal Boolean TRUE, FALSE;
+terminal  P_AP, P_CIERRE, C_AP, C_CIERRE, LL_AP, LL_CIERRE, PORCEN,
+		  IGUAL, COMA, PUNTO_Y_COMA, MAS, MENOS, MENOSMENOS, POR, DIV, LE, LT, GE, GT, OR,
+		  AND, IGUAL_BOOL, DIST_BOOL, NOT_BOOL, WHILE, IF, ELSE, FOR,
+		  RETURN, CONTINUE, BREAK, INT, BOOL, VOID, STRUCT, PUNTO,  MASMAS;
+
+non terminal Expression E0, E1, E2, E3, E4, E5, E6, E7, E8, E9, E10;
+non terminal Code Code;
+non terminal VarDeclSimple IniVar;
+non terminal VarDecl DeclVarMulti;
+non terminal Expression MaybeE10;
+non terminal Struct DeclStruct;
+non terminal List<Expression> CArray;
+non terminal Type Tipo, GTipo;
+non terminal List<VarDecl> DeclVarMultiList;
+non terminal Statement Statement, StIF, StFor, StWhile, StReturn;
+non terminal Program DeclAll;
+non terminal List<Expression> ExprList;
+non terminal FunctionDecl FunctionDecl;
+non terminal PrototypeDecl FunctionPrototype;
+non terminal List<VarDeclSimple> ArgsConId;
+non terminal List<Type> ArgsSinId;
+
+precedence nonassoc ELSE;
+start with DeclAll;
+
+//TODO Mirar a ver si los gets y tal son coherentes
+
+DeclAll ::=   DeclAll:program DeclVarMulti:dm PUNTO_Y_COMA 			{: program.push(dm); RESULT=program; :}
+			| DeclAll:program FunctionDecl:fd						{: program.push(fd); RESULT=program; :}
+			| DeclAll:program FunctionPrototype:fp PUNTO_Y_COMA		{: program.push(fp); RESULT=program; :}
+			| DeclAll:program DeclStruct:ds							{: program.push(ds); RESULT=program; :}
+			|														{: RESULT = new Program(); :}
+			;
+
+
+FunctionPrototype::=  Tipo:t IDEN:id P_AP P_CIERRE
+						{: RESULT = new PrototypeDecl(id, t, txleft); :}
+					| Tipo:t C_AP E10:e C_CIERRE CArray:listE IDEN:id P_AP P_CIERRE
+						{: ((LinkedList<Expression>) listE).addFirst(e); t.setArgsArray(listE); RESULT = new PrototypeDecl(id, t, txleft); :}
+					| Tipo:t IDEN:id P_AP ArgsSinId:list P_CIERRE
+						{: RESULT = new PrototypeDecl(id, list, t, txleft) ; :}
+					| Tipo:t C_AP E10:e C_CIERRE CArray:listE IDEN:id P_AP ArgsSinId:list P_CIERRE
+						{: ((LinkedList<Expression>) listE).addFirst(e); t.setArgsArray(listE); RESULT = new PrototypeDecl(id, list, t, txleft); :}
+					;
+
+FunctionDecl ::=  Tipo:t IDEN:id P_AP P_CIERRE LL_AP Code:c LL_CIERRE
+						{: RESULT = new FunctionDecl(id,  new LinkedList<VarDeclSimple>(), c, t, txleft); :}
+				| Tipo:t C_AP E10:e C_CIERRE CArray:listE IDEN:id P_AP P_CIERRE LL_AP Code:c LL_CIERRE
+						{: ((LinkedList<Expression>) listE).addFirst(e); t.setArgsArray(listE); RESULT = new FunctionDecl(id, new LinkedList<VarDeclSimple>(), c, t, txleft); :}
+				| Tipo:t IDEN:id P_AP ArgsConId:list P_CIERRE LL_AP Code:c LL_CIERRE
+						{: RESULT = new FunctionDecl(id, list, c, t, txleft); :}
+				| Tipo:t C_AP E10:e C_CIERRE CArray:listE IDEN:id P_AP ArgsConId:list P_CIERRE LL_AP Code:c LL_CIERRE
+						{: ((LinkedList<Expression>) listE).addFirst(e); t.setArgsArray(listE); RESULT = new FunctionDecl(id, list, c, t, txleft); :}
+				;
+
+ArgsConId ::=	  GTipo:t IDEN:id						{: RESULT = new LinkedList<VarDeclSimple>(); RESULT.add(new VarDeclSimple(t, new VarIdentifier(id, idxleft), txleft)); :}
+				| ArgsConId:l COMA GTipo:t IDEN:id		{: l.add(new VarDeclSimple(t, new VarIdentifier(id, idxleft), txleft)); RESULT = l; :}
+				;
+ArgsSinId::= 	  GTipo:t								{: RESULT = new LinkedList<Type>(); RESULT.add(t); :}
+				| ArgsSinId:l COMA GTipo:t 				{: l.add(t); RESULT = l; :}
+				;
+
+
+DeclVarMulti ::=  DeclVarMulti:dm COMA IniVar:v		{: v.setType(dm.getType()); dm.push(v); RESULT= dm; :}
+				| Tipo:t IniVar:v 					{: RESULT = new VarDecl(); v.setType(t); RESULT.push(v); :}
+				;
+IniVar	::=   IDEN:id
+				{: RESULT= new VarDeclSimple(new VarIdentifier(id, idxleft), idxleft); :}
+			| IDEN:id IGUAL E10:exp
+				{: RESULT= new VarDeclSimple(new VarIdentifier(id, idxleft), exp, idxleft); :}
+			| IDEN:id C_AP  E10:exp C_CIERRE CArray:listT IGUAL E10:expInit
+				{: ((LinkedList<Expression>) listT).addFirst(exp);  RESULT= new VarDeclSimple(new Type(listT, idxleft), new VarIdentifier(id, idxleft), expInit, idxleft); :}
+			| IDEN:id C_AP  E10:exp C_CIERRE CArray:list
+				{: ((LinkedList<Expression>) list).addFirst(exp); RESULT= new VarDeclSimple( new Type(list, idxleft), new VarIdentifier(id, idxleft), idxleft); :}
+			;
+
+ExprList::=   E10:e						{: RESULT = new	LinkedList<Expression>(); RESULT.add(e); :}
+			| ExprList:l COMA E10:e  	{: l.add(e); RESULT = l;:}
+			;
+
+DeclVarMultiList ::=  DeclVarMultiList:list DeclVarMulti:v PUNTO_Y_COMA		{: list.add(v); RESULT=list;:}
+					| DeclVarMulti:v PUNTO_Y_COMA							{: RESULT = new LinkedList<VarDecl>(); RESULT.add(v); :}
+					;
+
+DeclStruct	::= STRUCT:s IDEN:id LL_AP DeclVarMultiList:l LL_CIERRE
+					{: RESULT = new Struct (id, l, sxleft); :}
+				;
+
+// (Corchetes de array)^*
+CArray		::= CArray:list C_AP  E10:e C_CIERRE 		{: list.add(e); RESULT = list;:}
+				| 										{: RESULT = new	LinkedList<Expression>(); :}
+				;
+
+Tipo		::=   INT:i		{: RESULT = new Type("int", ixleft); :}
+				| BOOL:b 	    {: RESULT = new Type("bool", bxleft); :}
+				| VOID:v      {: RESULT = new Type("void", vxleft); :} //TODO Comprobar esto mas arriba
+				| IDEN:id   {: RESULT = new Type(id, idxleft); :}
+				;
+
+GTipo		::=   INT:i CArray: list 		{: RESULT = new Type("int", list, ixleft); :}
+				| BOOL:b CArray: list		{: RESULT = new Type("bool", list, bxleft); :}
+				| VOID:v CArray: list   	{: RESULT = new Type("void", list, vxleft); :}
+				| IDEN:id CArray: list	 	{: RESULT = new Type(id, list, idxleft); :}
+				;
+
+Code ::=  Code:c Statement:cu					{: c.push(cu); RESULT= c; :}
+		| Code:c DeclVarMulti:cu PUNTO_Y_COMA	{: c.push(cu); RESULT= c; :}
+		|										{: RESULT = new Code(); :}
+		;
+//=============================================================================
+
+
+Statement	::=   StIF:i						{: RESULT = i; :}
+				| StFor:f 						{: RESULT = f; :}
+				| StWhile:w						{: RESULT = w; :}
+				| PUNTO_Y_COMA					{: RESULT = new EmptyInstruction(); :}
+				| E10:e PUNTO_Y_COMA			{: RESULT = new ExpStatement(e); :}
+				| StReturn:ret					{: RESULT = ret; :}
+				| CONTINUE:c PUNTO_Y_COMA		{: RESULT = new Continue(cxleft); :}
+				| BREAK:b PUNTO_Y_COMA			{: RESULT = new Break(bxleft); :}
+				| LL_AP Code:c LL_CIERRE		{: RESULT = new Scope(c); :}
+				;
+
+StIF		::=   IF:i P_AP E10:e P_CIERRE Statement:s						{: RESULT = new If(e, s, null, ixleft); :}
+				| IF:i P_AP E10:e P_CIERRE Statement:s1 ELSE Statement:s2  {: RESULT = new If(e, s1, s2, ixleft); :}
+				;
+
+
+MaybeE10 ::=   E10:e {: RESULT = e; :}
+			| 	     {: RESULT = null; :}
+			;
+
+StFor		::= FOR:f P_AP MaybeE10:assign PUNTO_Y_COMA MaybeE10:cond PUNTO_Y_COMA MaybeE10:increm P_CIERRE Statement:statement //TODO: hay que hacer un instanceof assign en la capa superior
+				{: RESULT = new For(assign, cond, increm, statement, fxleft); :}
+				;
+
+StWhile		::= WHILE:w P_AP E10:e P_CIERRE Statement:statement  {: RESULT = new While(e, statement, wxleft); :}
+				;
+
+StReturn	::=   RETURN:r E10:e PUNTO_Y_COMA	{: RESULT = new Return(e, rxleft); :}
+				| RETURN:r PUNTO_Y_COMA			{: RESULT = new Return(null, rxleft); :}
+				;
+
+
+
+//=============================================================================
+E0 ::=    ENT:v						{: RESULT = new TInt (v); :}
+		| IDEN:id					{: RESULT = new VarIdentifier (id, idxleft); :}
+		| P_AP E10:e P_CIERRE		{: RESULT = e; :}
+		| TRUE 						{: RESULT = new TBool (true); :}
+		| FALSE						{: RESULT = new TBool (false); :}
+		;
+
+E1 ::=    IDEN:id P_AP ExprList:list P_CIERRE	{: RESULT = new FunctionCall (id, list, idxleft); :}
+		| IDEN:id P_AP P_CIERRE 				{: RESULT = new FunctionCall (id, idxleft); :}
+		| E1:lp C_AP E10:exp  C_CIERRE			{: RESULT = new ArrayId (lp, exp,expxleft); :}
+		| E1:lp PUNTO IDEN:id					{: RESULT = new StructId (lp, id, idxleft); :}
+		| E0:e									{: RESULT = e; :}
+		;
+
+E2 ::=    MASMAS E1:e1				{: RESULT = new EUn (e1, UnaryOperation.PREINCR, e1xleft); :}
+	    | MENOSMENOS E1:e1 			{: RESULT = new EUn (e1, UnaryOperation.PREDECR, e1xleft); :}
+		| MENOS E1:e1				{: RESULT = new EUn (e1, UnaryOperation.NEG, e1xleft); :}
+		| E1:e						{: RESULT = e; :}
+		;
+
+E3 ::=    E1:e1 MASMAS				{: RESULT = new EUn (e1, UnaryOperation.POSTINCR, e1xleft); :}
+		| E1:e1 MENOSMENOS			{: RESULT = new EUn (e1, UnaryOperation.POSTDECR, e1xleft); :}
+		| E2:e						{: RESULT = e; :}
+		;
+
+E4 ::=    NOT_BOOL E4:e1			{: RESULT = new EUn(e1, UnaryOperation.NOT, e1xleft); :}
+		| E3:e						{: RESULT = e; :}
+		;
+
+E5 ::=    E5:e1 POR E4:e2 			{: RESULT = new EBin(e1, e2, BinOperation.MULT, e1xleft); :}
+		| E5:e1 DIV E4:e2 			{: RESULT = new EBin(e1, e2, BinOperation.DIV, e1xleft); :}
+		| E5:e1 PORCEN E4:e2 		{: RESULT = new EBin(e1, e2, BinOperation.REM, e1xleft); :}
+		| E4:e						{: RESULT = e; :}
+		;
+
+E6 ::=    E6:e1 MAS E5:e2 			{: RESULT = new EBin(e1, e2, BinOperation.ADD, e1xleft); :}
+		| E6:e1 MENOS E5:e2  		{: RESULT = new EBin(e1, e2, BinOperation.SUBS, e1xleft); :}
+		| E5:e						{: RESULT = e; :}
+		;
+
+E7 ::=    E7:e1 LT E6:e2 			{: RESULT = new EBin(e1, e2, BinOperation.LT, e1xleft); :}
+		| E7:e1 LE E6:e2  			{: RESULT = new EBin(e1, e2, BinOperation.LE, e1xleft); :}
+		| E7:e1 GT E6:e2 			{: RESULT = new EBin(e1, e2, BinOperation.GT, e1xleft); :}
+		| E7:e1 GE E6:e2 			{: RESULT = new EBin(e1, e2, BinOperation.GE, e1xleft); :}
+		| E6:e						{: RESULT = e; :}
+		;
+
+E8 ::=    E8:e1 IGUAL_BOOL E7:e2	{: RESULT = new EBin(e1, e2, BinOperation.EQ, e1xleft); :}
+		| E8:e1 DIST_BOOL E7:e2 	{: RESULT = new EBin(e1, e2, BinOperation.NEQ, e1xleft); :}
+		| E7:e						{: RESULT = e; :}
+		;
+
+E9 ::=    E9:e1 AND E8:e2 			{: RESULT = new EBin(e1, e2, BinOperation.AND, e1xleft); :}
+		| E9:e1 OR E8:e2 			{: RESULT = new EBin(e1, e2, BinOperation.OR, e1xleft); :}
+		| E8:e						{: RESULT = e; :}
+		;
+
+E10 ::=  E1:id IGUAL E10:exp		{: RESULT = new Assignment (id, exp, expxleft); :}
+		| E9:e						{: RESULT = e; :}
+		;
