@@ -15,3 +15,10 @@ It generates P-machine code in a the file called output.yap
 - The source code of the Java compiler implementation 
 - Several examples of the C like language separated in two folders. One contains correct code, so the compiler successfully generate code for those, and the other contains lexical and syntactic errors so the compiler detects them and output descriptive error messages.
 - A folder `lexico` to debug the lexical implementation It's a slightly modified version of the final lexical that displays the recognized lexical tokens.
+- 
+## About this project
+
+This was a project for the subject Language Processors for the fourth course in the Double Degree in Mathematics and Computer Science at Complutense University of Madrid.
+
+This project was done along with https://github.com/lezcano
+It was marked with a 10/10
