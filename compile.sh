@@ -30,7 +30,7 @@ echo "Change the for in the function yy_mark_start() in the file src/alex/Analiz
 	"
 
 # This part is for debugging purposes,
-# feel free to comment this if you want to see the result of the lexical analizer
+# feel free to comment this if you don't want to see the result of the lexical analizer
 #========================================================
 echo "[+] Lexic analizer result:"
 echo ""
